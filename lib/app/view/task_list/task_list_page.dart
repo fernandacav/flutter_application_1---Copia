@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/app/view/components/h1.dart';
 import 'package:flutter_application_1/app/view/components/shape.dart';
 import 'package:flutter_application_1/app/view/model/task.dart';
-
 import '../../db/task_database.dart';
 
 class TaskListPage extends StatefulWidget {
@@ -13,7 +12,7 @@ class TaskListPage extends StatefulWidget {
 }
 
 class _TaskListPageState extends State<TaskListPage> {
-  final taskList = <Task> [];
+  final taskList = <Task>[];
 
   @override
   void initState() {
@@ -36,7 +35,7 @@ class _TaskListPageState extends State<TaskListPage> {
 
   void _addTask(Task task) async {
     final id = await TaskDatabase.instance.createTask(task);
-      setState(() {
+    setState(() {
       task.id = id; // Atribui o ID gerado pelo banco
       taskList.add(task);
     });
@@ -51,9 +50,6 @@ class _TaskListPageState extends State<TaskListPage> {
     }
   }
 
-
-
-
   void _updateTask(Task task) async {
     if (task.id != null) {
       await TaskDatabase.instance.updateTask(task);
@@ -61,41 +57,48 @@ class _TaskListPageState extends State<TaskListPage> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-          children: [
-            const _Header(),
-            Expanded(child: _TaskList(
-                taskList,
-              onTaskDoneChange: (task) {
-                  task.done = !task.done;
-                  setState(() {});
-              }, onTaskDelete: (Task task) {
-                  _deleteTask(task);
-                  },
-            ),
-            ),
-          ]
-      ),
+      body: Column(children: [
+        const _Header(),
+        Expanded(
+          child: _TaskList(
+            taskList,
+            onTaskDoneChange: (task) {
+              task.done = !task.done;
+              setState(() {});
+            },
+            onTaskDelete: (Task task) {
+              _deleteTask(task);
+            },
+          ),
+        ),
+      ]),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showNewTaskModal(context),
-      child: const Icon(Icons.add, size: 50, color: Colors.white,),
+        child: const Icon(
+          Icons.add,
+          size: 50,
+          color: Colors.white,
+        ),
       ),
-          );
+    );
   }
 
   void _showNewTaskModal(BuildContext context) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      builder: (_) => _NewTaskModal(onTaskCreated: (Task task) {
-        _addTask(task);
-      setState(() {
-        });
-      }, onTaskUpdated: (Task task) {_updateTask(task);  },),
+      builder: (_) => _NewTaskModal(
+        onTaskCreated: (Task task) {
+          _addTask(task);
+          setState(() {});
+        },
+        onTaskUpdated: (Task task) {
+          _updateTask(task);
+        },
+      ),
     );
   }
 }
@@ -164,15 +167,13 @@ class _NewTaskModal extends StatelessWidget {
   }
 }
 
-
-
 class _TaskList extends StatelessWidget {
   const _TaskList(
-      this.taskList, {
-        super.key,
-        required this.onTaskDoneChange,
-        required this.onTaskDelete,
-      });
+    this.taskList, {
+    super.key,
+    required this.onTaskDoneChange,
+    required this.onTaskDelete,
+  });
 
   final List<Task> taskList;
   final void Function(Task task) onTaskDoneChange;
@@ -203,7 +204,6 @@ class _TaskList extends StatelessWidget {
   }
 }
 
-
 class _Header extends StatelessWidget {
   const _Header({
     super.key,
@@ -217,27 +217,31 @@ class _Header extends StatelessWidget {
         child: Stack(
           alignment: Alignment.topCenter,
           children: [
-            Row(children: [Shape()]),
-            Column(
-                children: [
-                  SizedBox(height: 100,),
-                  Image.asset(
-                    'assets/images/tasks-list-image.png',
-                    width: 120,
-                    height: 120,),
-                  const SizedBox(height: 16,),
-                  const H1("Complete suas tarefas", color: Colors.white),
-                  const SizedBox(height: 24,)
-                ]
-            )
+            const Row(children: [Shape()]),
+            Column(children: [
+              const SizedBox(
+                height: 100,
+              ),
+              Image.asset(
+                'assets/images/tasks-list-image.png',
+                width: 120,
+                height: 120,
+              ),
+              const SizedBox(
+                height: 16,
+              ),
+              const H1("Complete suas tarefas", color: Colors.white),
+              const SizedBox(
+                height: 24,
+              )
+            ])
           ],
-        )
-    );
+        ));
   }
 }
 
 class _TaskItem extends StatefulWidget {
-  const _TaskItem(this.task, {Key? key, this.onTap, this.onDelete}) : super(key: key);
+  const _TaskItem(this.task, {super.key, this.onTap, this.onDelete});
 
   final Task task;
   final VoidCallback? onTap;
@@ -271,13 +275,13 @@ class _TaskItemState extends State<_TaskItem> {
                   Text(widget.task.title),
                 ],
               ),
-              Spacer(),
+              const Spacer(),
               IconButton(
-                icon: Icon(Icons.delete, color: Colors.red),
+                icon: const Icon(Icons.delete, color: Colors.red),
                 onPressed: widget.onDelete,
               ),
               IconButton(
-                icon: Icon(Icons.edit, color: Colors.blue),
+                icon: const Icon(Icons.edit, color: Colors.blue),
                 onPressed: () {
                   showModalBottomSheet(
                     context: context,
@@ -285,7 +289,6 @@ class _TaskItemState extends State<_TaskItem> {
                     builder: (_) => _NewTaskModal(
                       task: widget.task,
                       onTaskCreated: (_) {},
-
                       onTaskUpdated: (updatedTask) {
                         setState(() {});
                       },
@@ -293,7 +296,6 @@ class _TaskItemState extends State<_TaskItem> {
                   );
                 },
               ),
-
             ],
           ),
         ),
@@ -301,6 +303,3 @@ class _TaskItemState extends State<_TaskItem> {
     );
   }
 }
-
-
-
